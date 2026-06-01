@@ -30,7 +30,7 @@ public class OrdersPagamentoService {
         );
 
         if (count == null || count == 0) {
-            throw new IllegalArgumentException("Pedido não encontrado: " + orderId);
+            throw new IllegalArgumentException("Pedido não existe: " + orderId);
         }
 
         OrdersPagamento pagamento = new OrdersPagamento();
