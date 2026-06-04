@@ -22,7 +22,7 @@ public class OrdersCaixaController {
         this.service = service;
     }
 
-    @PostMapping("/abrir")
+    @PostMapping("/open")
     public OrdersCaixa abrirCaixa(@RequestParam Long usuarioId,
                                   @RequestParam BigDecimal saldoInicial) {
         return service.abrirCaixa(usuarioId, saldoInicial);
