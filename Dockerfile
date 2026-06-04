@@ -22,6 +22,10 @@ WORKDIR /app
 # JVM options can be supplied at runtime via the JAVA_OPTS env var
 ENV JAVA_OPTS="-Xms256m -Xmx512m"
 
+# Activate the 'docker' Spring profile which uses host.docker.internal for MySQL
+# Override with -e SPRING_PROFILES_ACTIVE=container to use container profile instead
+ENV SPRING_PROFILES_ACTIVE="docker"
+
 # Copy the fat jar produced by the build stage (adjust name if your artifactId/version differs)
 # Copy the built jar (use wildcard so the Dockerfile doesn't need to be updated for version changes)
 COPY --from=build /workspace/target/*.jar ./app.jar
