@@ -1,7 +1,7 @@
 # Requisitos do Sistema - Financeiro (Aplicação Desktop em java)
 
 ## 1. Objetivo
-Desenvolver um módulo **Financeiro** como aplicação desktop em Python, integrado ao banco de dados `pedidos`.  
+Desenvolver um módulo **Financeiro** como aplicação desktop em java, integrado ao banco de dados `pedidos`.  
 A aplicação deve seguir arquitetura **MVC** organizada na pasta `Financeiro`, com camadas separadas para **Model**, **View** e **Controller**.
 
 
