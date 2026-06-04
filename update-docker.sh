@@ -43,19 +43,12 @@ if ! docker ps > /dev/null 2>&1; then
 fi
 echo -e "${GREEN}✅ Docker está ativo${NC}"
 
-# 5. Remover imagem antiga
+# 5. Build (Docker vai reutilizar cache das camadas anteriores)
 echo ""
-echo -e "${YELLOW}[3/4] Limpando imagem antiga...${NC}"
-if docker images sistema-financeiro:latest --quiet | grep -q .; then
-    docker rmi sistema-financeiro:latest > /dev/null 2>&1
-    echo -e "${GREEN}✅ Imagem antiga removida${NC}"
-else
-    echo -e "${CYAN}ℹ️  Nenhuma imagem anterior encontrada${NC}"
-fi
-
-# 6. Build
+echo -e "${YELLOW}[3/4] Buildando com as alterações...${NC}"
+echo -e "${CYAN}ℹ️  Docker vai reutilizar cache para ir mais rápido${NC}"
 echo ""
-echo -e "${YELLOW}[4/4] Buildando nova imagem...${NC}"
+echo -e "${YELLOW}[4/4] Compilando código nova...${NC}"
 if docker build -t sistema-financeiro:latest . > /tmp/docker_build.log 2>&1; then
     echo -e "${GREEN}✅ Build concluído com sucesso${NC}"
 else
@@ -67,7 +60,8 @@ fi
 # 7. Informar próximos passos
 echo ""
 echo -e "${GREEN}╔════════════════════════════════════════════════════════════════╗${NC}"
-echo -e "${GREEN}║           ✅ Tudo pronto! Pronto para rodar!                   ║${NC}"
+echo -e "${GREEN}║    ✅ Pronto! Nova versão compilada e disponível!               ║${NC}"
+echo -e "${GREEN}║    (Docker reutilizou cache para build rápido)                  ║${NC}"
 echo -e "${GREEN}╚════════════════════════════════════════════════════════════════╝${NC}"
 echo ""
 

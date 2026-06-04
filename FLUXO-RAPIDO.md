@@ -48,7 +48,6 @@ Se não quer usar scripts, comando único no WSL:
 
 ```bash
 cd ~/SistemaFinanceiro && git pull origin main && \
-docker rmi sistema-financeiro:latest 2>/dev/null || true && \
 docker build -t sistema-financeiro:latest . && \
 ./run-docker-final.sh
 ```
@@ -143,8 +142,8 @@ cd C:\Projetos\SistemaFinanceiro
 # ✅ Push realizado na branch 'main'
 # 📝 Próximos passos no WSL:
 #    1. git pull origin main
-#    2. docker rmi sistema-financeiro:latest
-#    3. ...
+#    2. docker build -t sistema-financeiro:latest .
+#    3. ./run-docker-final.sh
 ```
 
 ### WSL (Bash)
@@ -158,10 +157,11 @@ cd ~/SistemaFinanceiro
 # ✅ Repositório atualizado
 # 📝 Último commit: feat: adicionar endpoint GET /pagamentos/{id}/status
 # [2/4] Verificando Docker...
-# [3/4] Limpando imagem antiga...
-# [4/4] Buildando nova imagem...
-# ✅ Build concluído
-# 
+# [3/4] Buildando com as alterações...
+# ℹ️  Docker vai reutilizar cache para ir mais rápido
+# [4/4] Compilando código nova...
+# ✅ Build concluído com sucesso
+#
 # Deseja rodar a aplicação agora? (s/n) s
 # 🚀 Iniciando aplicação...
 ```
