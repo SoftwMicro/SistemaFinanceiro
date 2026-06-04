@@ -17,7 +17,7 @@ public class OrdersPagamentoController {
         this.service = service;
     }
 
-    @PostMapping("/registrarPagamento")
+    @PostMapping("/registerPayment")
     public ResponseEntity<?> registerPayment(@RequestBody PaymentRequest request) {
         try {
             OrdersPagamento saved = service.registerPayment(request);
