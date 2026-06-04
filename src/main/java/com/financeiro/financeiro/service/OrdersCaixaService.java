@@ -29,7 +29,7 @@ public class OrdersCaixaService {
 
     public OrdersCaixa fecharCaixa(Long caixaId, BigDecimal saldoFinal) {
         OrdersCaixa caixa = repository.findById(caixaId)
-                .orElseThrow(() -> new RuntimeException("Caixa não encontrado"));
+                .orElseThrow(() -> new RuntimeException("Caixa encontrado"));
 
         caixa.setDataFechamento(LocalDateTime.now());
         caixa.setSaldoFinal(saldoFinal);
