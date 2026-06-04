@@ -1,7 +1,7 @@
 # Multi-stage Dockerfile for building and running the Spring Boot application
 # Build stage: use Maven to compile and package the app (Java 26)
 # NOTE: official maven images with OpenJDK 26 may not exist depending on registry; Docker will try to pull
-FROM maven:3.9.4-openjdk-26 AS build
+FROM maven:3.8.8-openjdk-17 AS build
 WORKDIR /workspace
 
 # Copy only the files needed for dependency resolution first to leverage Docker cache
@@ -14,7 +14,8 @@ RUN mvn -B -DskipTests package
 
 # Run stage: smaller runtime image with only the JRE (Java 26)
 # If this tag doesn't exist in your registry, replace with an available JRE 26 image or build with Java 17 instead
-FROM eclipse-temurin:26-jre-jammy
+# Run stage: smaller runtime image with only the JRE (Java 17)
+FROM eclipse-temurin:17-jre-jammy
 WORKDIR /app
 
 # JVM options can be supplied at runtime via the JAVA_OPTS env var
