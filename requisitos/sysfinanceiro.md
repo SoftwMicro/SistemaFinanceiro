@@ -81,6 +81,15 @@ port=3306
   - Abertura com saldo(formatação moeda brazil) inicial obrigatório.
   - Fechamento com saldo(formatação moeda brazil) final obrigatório.
   - Status controlado (ABERTO/FECHADO).
+Post End point
+Api:http://localhost:8080/Caixa/abrir
+Parameters
+usuarioId *
+integer($int64)
+saldoInicial *
+number
+
+Retorno
 
 - **Pagamentos**:
   - Seleção de pedido existente.
@@ -105,11 +114,11 @@ port=3306
 Utilizar boas práticas Design Patterns e clean code.
 
 - **Model**:
-  - Classes representando tabelas (`orders_usuario`, `orders_caixa`, `orders_pagamento`, `orders_receipt`).
+  - Classes representando tabelas (`orders_usuario`).
   - Métodos de persistência (CRUD).
 - **View**:
-  - Interface gráfica em Tkinter/PyQt.
-  - Telas: Login, Cadastro de Usuário, Caixa, Pagamentos, Comprovantes.
+  - Interface gráfica em Tkinter
+  - Telas: Login, Cadastro de Usuário
 - **Controller**:
   - Lógica de negócio.
   - Validação de dados.

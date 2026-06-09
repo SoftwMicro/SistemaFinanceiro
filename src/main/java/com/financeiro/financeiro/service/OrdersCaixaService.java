@@ -5,7 +5,9 @@ import com.financeiro.financeiro.repository.OrdersCaixaRepository;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 import com.financeiro.financeiro.model.StatusCaixa;
 
@@ -36,4 +38,10 @@ public class OrdersCaixaService {
         caixa.setStatus(StatusCaixa.FECHADO);
         return repository.save(caixa);
     }
+
+    public Optional<OrdersCaixa> obterCaixaAberturaAtual(Long usuarioId) {
+        LocalDate dataAtual = LocalDate.now();
+        return repository.findCaixaAbertoPorUsuarioEData(usuarioId, dataAtual);
+    }
 }
+
