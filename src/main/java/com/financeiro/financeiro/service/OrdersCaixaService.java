@@ -7,7 +7,8 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Optional;
+import java.time.ZoneId;
+import java.util.List;
 
 import com.financeiro.financeiro.model.StatusCaixa;
 
@@ -39,9 +40,11 @@ public class OrdersCaixaService {
         return repository.save(caixa);
     }
 
-    public Optional<OrdersCaixa> obterCaixaAberturaAtual(Long usuarioId) {
-        LocalDate dataAtual = LocalDate.now();
-        return repository.findCaixaAbertoPorUsuarioEData(usuarioId, dataAtual);
+    public List<OrdersCaixa> obterCaixaAberturaFechamento(Long usuarioId) {
+        // Usa o fuso horário de Brasília
+        ZoneId brasilia = ZoneId.of("America/Sao_Paulo");
+        LocalDate dataAtual = LocalDate.now(brasilia);
+        return repository.findCaixaAberturaFechamentoPorUsuarioEData(usuarioId, dataAtual);
     }
 }
 

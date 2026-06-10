@@ -2,7 +2,6 @@ package com.financeiro.financeiro.controller;
 
 import com.financeiro.financeiro.model.OrdersCaixa;
 import com.financeiro.financeiro.service.OrdersCaixaService;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -13,6 +12,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 @RestController
 @RequestMapping("/caixa")
@@ -37,11 +37,11 @@ public class OrdersCaixaController {
         return service.fecharCaixa(id, saldoFinal);
     }
 
-    @GetMapping("/obter-abertura")
-    public ResponseEntity<OrdersCaixa> obterCaixaAbertura(@RequestParam Long usuarioId) {
-        return service.obterCaixaAberturaAtual(usuarioId)
-                .map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
+    @GetMapping("/obter-abertura-fechamento")
+    public ResponseEntity<List<OrdersCaixa>> obterCaixaAberturaFechamento(@RequestParam Long usuarioId) {
+        List<OrdersCaixa> caixas = service.obterCaixaAberturaFechamento(usuarioId);
+        // Retorna 200 com a lista (pode estar vazia se não houver abertura/fechamento para o usuário na data atual)
+        return ResponseEntity.ok(caixas);
     }
 }
 
