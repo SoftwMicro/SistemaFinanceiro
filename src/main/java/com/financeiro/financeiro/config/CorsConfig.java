@@ -16,8 +16,14 @@ public class CorsConfig {
         CorsConfiguration config = new CorsConfiguration();
         // allow credentials (cookies, authorization headers)
         config.setAllowCredentials(true);
-        // allow the Angular dev server origin
-        config.setAllowedOrigins(Arrays.asList("http://localhost:4200"));
+        // allow any localhost origin (any port) and loopback addresses
+        // use allowed origin patterns to permit wildcard ports
+        config.setAllowedOriginPatterns(Arrays.asList(
+                "http://localhost:*",
+                "https://localhost:*",
+                "http://127.0.0.1:*",
+                "https://127.0.0.1:*"
+        ));
         // allow all headers and methods
         config.addAllowedHeader("*");
         config.addAllowedMethod("*");
