@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.math.BigDecimal;
 
 @Service
 public class OrdersPagamentoService {
@@ -31,6 +32,25 @@ public class OrdersPagamentoService {
 
         if (count == null || count == 0) {
             throw new IllegalArgumentException("Pedido não existe: " + orderId);
+        }
+
+        // Recupera o valor total do pedido e valida se o valorPago não o ultrapassa
+        BigDecimal orderTotal = jdbcTemplate.queryForObject(
+                "SELECT valor_total FROM orders_order WHERE id = ?",
+                BigDecimal.class,
+                orderId
+        );
+
+        if (orderTotal == null) {
+            throw new IllegalArgumentException("Não foi possível obter o valor total do pedido: " + orderId);
+        }
+
+        if (request.getValorPago() == null) {
+            throw new IllegalArgumentException("valorPago é obrigatório");
+        }
+
+        if (request.getValorPago().compareTo(orderTotal) > 0) {
+            throw new IllegalArgumentException("Valor do pagamento R$ (" + request.getValorPago() + ") é maior que o valor total do pedido R$ (" + orderTotal + ")");
         }
 
         OrdersPagamento pagamento = new OrdersPagamento();
