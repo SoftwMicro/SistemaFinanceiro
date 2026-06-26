@@ -34,7 +34,7 @@ public class OrdersPagamentoService {
             throw new IllegalArgumentException("Pedido não existe: " + orderId);
         }
 
-        // Recupera o valor total do pedido e valida se o valorPago não o ultrapassa
+        // Recupera o valor total do pedido
         BigDecimal orderTotal = jdbcTemplate.queryForObject(
                 "SELECT valor_total FROM orders_order WHERE id = ?",
                 BigDecimal.class,
@@ -49,8 +49,21 @@ public class OrdersPagamentoService {
             throw new IllegalArgumentException("valorPago é obrigatório");
         }
 
-        if (request.getValorPago().compareTo(orderTotal) > 0) {
-            throw new IllegalArgumentException("Valor do pagamento R$ (" + request.getValorPago() + ") é maior que o valor total do pedido R$ (" + orderTotal + ")");
+        // Soma pagamentos já registrados para este pedido
+        BigDecimal existingSum = jdbcTemplate.queryForObject(
+                "SELECT COALESCE(SUM(valor_pago), 0) FROM orders_pagamento WHERE order_id = ?",
+                BigDecimal.class,
+                orderId
+        );
+
+        if (existingSum == null) {
+            existingSum = BigDecimal.ZERO;
+        }
+
+        BigDecimal newAccumulated = existingSum.add(request.getValorPago());
+
+        if (newAccumulated.compareTo(orderTotal) > 0) {
+            throw new IllegalArgumentException("Valor do pagamento R$ (" + request.getValorPago() + ") faz com que a soma dos pagamentos (" + newAccumulated + ") ultrapasse o valor total do pedido R$ (" + orderTotal + ")");
         }
 
         OrdersPagamento pagamento = new OrdersPagamento();
