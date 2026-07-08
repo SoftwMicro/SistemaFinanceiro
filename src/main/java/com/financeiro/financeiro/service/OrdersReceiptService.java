@@ -1,6 +1,8 @@
 package com.financeiro.financeiro.service;
 
 import com.financeiro.financeiro.dto.ReceiptRequest;
+import com.financeiro.financeiro.dto.ReceiptResponse;
+import com.financeiro.financeiro.dto.ReceiptRow;
 import com.financeiro.financeiro.model.OrdersReceipt;
 import com.financeiro.financeiro.repository.OrdersReceiptRepository;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -8,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 public class OrdersReceiptService {
@@ -44,19 +47,36 @@ public class OrdersReceiptService {
             throw new IllegalArgumentException("Não existe pagamento para o pedido informado: " + orderId);
         }
 
-        OrdersReceipt receipt = new OrdersReceipt();
-        receipt.setOrderId(orderId);
+        Integer comprovanteCount = jdbcTemplate.queryForObject(
+                "SELECT COUNT(1) FROM orders_receipt WHERE order_id = ?",
+                Integer.class,
+                orderId
+        );
 
-        String numero = request.getNumeroComprovante();
-        if (numero == null || numero.trim().isEmpty()) {
-            numero = "RCPT-" + orderId + "-" + System.currentTimeMillis();
+        OrdersReceipt saved = null;
+
+        // Se não houver comprovante para o pedido (null ou zero) cria um novo, caso contrário reutiliza o existente
+        if (comprovanteCount == null || comprovanteCount == 0) {
+
+            OrdersReceipt receipt = new OrdersReceipt();
+            receipt.setOrderId(orderId);
+
+            String numero = request.getNumeroComprovante();
+            if (numero == null || numero.trim().isEmpty()) {
+                numero = "RCPT-" + orderId + "-" + System.currentTimeMillis();
+            }
+            receipt.setNumeroComprovante(numero);
+
+            receipt.setTipo(request.getTipo());
+            receipt.setDataEmissao(request.getDataEmissao() != null ? request.getDataEmissao() : LocalDateTime.now());
+
+            saved = repository.save(receipt);
+
+        }else {
+            saved = repository.findByOrderId(orderId)
+                    .orElseThrow(() -> new IllegalArgumentException("Comprovante não encontrado para o pedido: " + orderId));
         }
-        receipt.setNumeroComprovante(numero);
 
-        receipt.setTipo(request.getTipo());
-        receipt.setDataEmissao(request.getDataEmissao() != null ? request.getDataEmissao() : LocalDateTime.now());
-
-        OrdersReceipt saved = repository.save(receipt);
 
         // Monta os dados do comprovante conforme a query solicitada
         String sql = "SELECT " +
@@ -76,11 +96,11 @@ public class OrdersReceiptService {
                 "LEFT JOIN orders_pagamento pag ON oi.pedido_id = pag.order_id " +
                 "WHERE oi.pedido_id = ?";
 
-        java.util.List<com.financeiro.financeiro.dto.ReceiptRow> rows = jdbcTemplate.query(
+        List<ReceiptRow> rows = jdbcTemplate.query(
                 sql,
                 new Object[]{orderId},
                 (rs, rowNum) -> {
-                    com.financeiro.financeiro.dto.ReceiptRow r = new com.financeiro.financeiro.dto.ReceiptRow();
+                    ReceiptRow r = new ReceiptRow();
                     r.setPedidoId(rs.getLong("pedido_id"));
                     r.setQuantidade(rs.getInt("quantidade"));
                     r.setPrecoUnitario(rs.getBigDecimal("preco_unitario"));
@@ -96,7 +116,7 @@ public class OrdersReceiptService {
                 }
         );
 
-        com.financeiro.financeiro.dto.ReceiptResponse response = new com.financeiro.financeiro.dto.ReceiptResponse();
+        ReceiptResponse response = new ReceiptResponse();
         response.setReceipt(saved);
         response.setRows(rows);
 

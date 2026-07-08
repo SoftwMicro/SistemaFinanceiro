@@ -24,19 +24,19 @@ public class OrdersCaixaController {
     }
 
     @PostMapping("/abrir")
-    public OrdersCaixa abrirCaixa(@RequestParam Long usuarioId,
-                                  @RequestParam BigDecimal saldoInicial) {
+    public OrdersCaixa abrirCaixa(@RequestParam("usuarioId") Long usuarioId,
+                                  @RequestParam("saldoInicial") BigDecimal saldoInicial) {
         return service.abrirCaixa(usuarioId, saldoInicial);
     }
 
     @PostMapping("/fechar/{id}")
     public OrdersCaixa fecharCaixa(@PathVariable Long id,
-                                   @RequestParam BigDecimal saldoFinal) {
+                                   @RequestParam("saldoFinal") BigDecimal saldoFinal) {
         return service.fecharCaixa(id, saldoFinal);
     }
 
     @GetMapping("/obter-abertura-fechamento")
-    public ResponseEntity<List<OrdersCaixa>> obterCaixaAberturaFechamento(@RequestParam Long usuarioId) {
+    public ResponseEntity<List<OrdersCaixa>> obterCaixaAberturaFechamento(@RequestParam("usuarioId") Long usuarioId) {
         List<OrdersCaixa> caixas = service.obterCaixaAberturaFechamento(usuarioId);
         // Retorna 200 com a lista (pode estar vazia se não houver abertura/fechamento para o usuário na data atual)
         return ResponseEntity.ok(caixas);
